@@ -9,3 +9,38 @@ By starting with 1 and 2, the first 10 terms will be:
 find the sum of the even-valued terms.
 
 '''
+
+import numpy as np
+
+
+def fib_rec_memoization(n, fib_mem):
+    if len(fib_mem) > n:
+        return fib_mem[n], fib_mem
+    if (n == 0 or n == 1):
+        fib_mem = np.append(fib_mem, n + 1)
+        return fib_mem[n], fib_mem
+
+    res1, fib_mem = fib_rec_memoization(n-1, fib_mem)
+    res2, fib_mem = fib_rec_memoization(n-2, fib_mem)
+    res = res1 + res2
+    fib_mem = np.append(fib_mem, res)
+    return res, fib_mem
+
+def fib_by_end_value(max_val):
+    iter = 0
+    fib_mem = np.array([])
+    fail_cond = False
+    while (not fail_cond):
+        res, fib_mem = fib_rec_memoization(iter, fib_mem)
+        fail_cond = res >= max_val
+        iter += 1
+
+    return fib_mem[: -1]
+
+
+des_max = 4000000
+res_vec = fib_by_end_value(des_max)
+even_val = res_vec[np.where((res_vec % 2) == 0)]
+
+print("The sum of the even numbers in the fibonacci sequence that does not exceed", des_max,
+      "is:", int(sum(even_val)))
